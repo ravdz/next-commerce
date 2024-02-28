@@ -8,7 +8,7 @@ interface Props {
 export const ProductListItem = (props: Props) => {
 	const { imageSrc, imageAlt, name, price, slug } = props.product;
 	return (
-		<div className="group relative">
+		<li className="group relative">
 			<div className="aspect-h-1 aspect-w-1 lg:aspect-none w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
 				<Image
 					className="h-full w-full object-cover object-center lg:h-full lg:w-full"
@@ -29,6 +29,6 @@ export const ProductListItem = (props: Props) => {
 				</div>
 				<p className="text-sm font-medium text-gray-900">{price}</p>
 			</div>
-		</div>
+		</li>
 	);
 };
