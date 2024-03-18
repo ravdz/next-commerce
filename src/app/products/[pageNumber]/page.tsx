@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 export default async function Products({ params }: Props) {
 	const { totalPages, totalProducts } = await countProducts();
 	const { pageNumber } = params;
-	const products = await getProducts({ take: "10", offset: `${pageNumber}` });
+	const products = await getProducts({ take: "100", offset: `${pageNumber}` });
 	return (
 		<main>
 			<ProductList products={products} />
