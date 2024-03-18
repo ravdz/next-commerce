@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	images: {
-		domains: ["picsum.photos"],
+		domains: ["picsum.photos", "naszsklep-api.vercel.app"],
+	},
+	experimental: {
+		typedRoutes: true,
 	},
 };
 

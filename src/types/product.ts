@@ -1,11 +1,10 @@
 export interface IProduct {
 	id: string;
-	name: string;
-	slug: string;
-	description: string;
+	title: string;
 	price: number;
-	createdAt: string;
-	updatedAt: string;
-	imageSrc: string;
-	imageAlt: string;
+	description: string;
+	category: string;
+	rating: { rate: number; count: number };
+	image: string;
+	longDescription: string;
 }
