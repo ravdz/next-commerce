@@ -1,23 +1,96 @@
-import type { IProduct } from "@/types/product";
+import { notFound } from "next/navigation";
+import type { ISingleProduct, IProductList } from "@/types/product";
+import { executeGraphql } from "@/api";
+import {
+	GetProductByIdDocument,
+	GetProductsByNameDocument,
+	GetProductsDocument,
+	GetTotalNumberOfProductsDocument,
+} from "@/gql/graphql";
 
-interface IgetProducts {
-	take?: string;
-	offset?: string;
-}
+type OrderBy = "DEFAULT" | "NAME" | "PRICE" | "RATING";
+type Order = "ASC" | "DESC";
 
-export const getProducts = async (props?: IgetProducts) => {
-	let params = "";
-	if (props?.take) {
-		params = new URLSearchParams({ ...props }).toString();
-	}
+export const getProducts = async ({
+	take = 10,
+	skip = 0,
+	orderBy = "DEFAULT",
+	order = "ASC",
+}: {
+	take?: number;
+	skip?: number;
+	orderBy?: OrderBy;
+	order?: Order;
+}): Promise<IProductList> => {
+	const {
+		products: {
+			meta: { total },
+			data,
+		},
+	} = await executeGraphql(GetProductsDocument, { take, skip, orderBy, order });
 
-	const res = await fetch(
-		`https://naszsklep-api.vercel.app/api/products${params ? `?=${params}` : ""}`,
-	);
-	return (await res.json()) as IProduct[];
+	return {
+		total,
+		products: data.map((product) => {
+			return {
+				id: product.id,
+				name: product.name,
+				price: product.price,
+				coverImage: product.images[0]?.url || "",
+			};
+		}),
+	};
 };
 
-export const getProductById = async (productId: IProduct["id"]) => {
-	const res = await fetch(`https://naszsklep-api.vercel.app/api/products/${productId}`);
-	return (await res.json()) as IProduct;
+export const getProductsByName = async (name: string): Promise<IProductList> => {
+	const {
+		products: {
+			meta: { total },
+			data,
+		},
+	} = await executeGraphql(GetProductsByNameDocument, { search: name });
+
+	return {
+		total,
+		products: data.map((product) => {
+			return {
+				id: product.id,
+				name: product.name,
+				price: product.price,
+				coverImage: product.images[0]?.url || "",
+			};
+		}),
+	};
+};
+
+export const getTotalNumberOfProducts = async (): Promise<number> => {
+	const {
+		products: {
+			meta: { total },
+		},
+	} = await executeGraphql(GetTotalNumberOfProductsDocument);
+	return total;
+};
+
+export const getProductById = async (productId: ISingleProduct["id"]): Promise<ISingleProduct> => {
+	const { product } = await executeGraphql(GetProductByIdDocument, { id: productId });
+
+	if (!product) {
+		notFound();
+	}
+	const { id, name, description, price, categories, images, rating, reviews } = product;
+	return {
+		id,
+		name,
+		description,
+		price,
+		category: {
+			name: categories[0]?.name || "",
+			id: categories[0]?.id || "",
+			slug: categories[0]?.slug || "",
+		},
+		images,
+		rating: rating || 0,
+		reviews: reviews.length,
+	};
 };

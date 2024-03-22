@@ -1,0 +1,12 @@
+query GetCollections {
+    collections {
+        data {
+            name
+            slug
+            id
+        }
+        meta {
+            total
+        }
+    }
+}

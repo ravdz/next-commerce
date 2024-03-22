@@ -1,11 +1,22 @@
-import { getProducts } from "@/api/products";
+import { getTotalNumberOfProducts } from "@/api/products";
 
 export const countProducts = async (): Promise<{ totalPages: number; totalProducts: number }> => {
-	const products = await getProducts({ take: "-1" });
-	const productsPerPage = 100;
+	const totalProducts = await getTotalNumberOfProducts();
+	const productsPerPage = 10;
 	const totalPages =
-		products.length % productsPerPage === 0
-			? products.length / productsPerPage
-			: Math.ceil(products.length / productsPerPage);
-	return { totalPages, totalProducts: products.length };
+		totalProducts % productsPerPage === 0
+			? totalProducts / productsPerPage
+			: Math.ceil(totalProducts / productsPerPage);
+	return { totalPages, totalProducts };
+};
+
+export const countTotalPages = (totalItems: number, itemsPerPage: number = 10): number => {
+	return totalItems % itemsPerPage === 0
+		? totalItems / itemsPerPage
+		: Math.ceil(totalItems / itemsPerPage);
+};
+
+export const range = (start: number, end: number) => {
+	const length = end - start + 1;
+	return Array.from({ length }, (_, idx) => idx + start);
 };

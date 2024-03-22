@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { type Route } from "next";
 import { usePathname } from "next/navigation";
 import { ActiveLink } from "@/components/atoms/ActiveLink";
+import { Searchbar } from "@/components/moleculs/Searchbar";
 
 const links = [
 	{
@@ -10,7 +11,9 @@ const links = [
 		label: "Home",
 		exact: true,
 	},
-	{ href: "/products/1", label: "All", exact: false },
+	{ href: "/products", label: "All", exact: false },
+	{ href: "/categories", label: "Categories", exact: false },
+	{ href: "/collections", label: "Collections", exact: false },
 ];
 
 export const Navbar = () => {
@@ -71,7 +74,7 @@ export const Navbar = () => {
 								alt="Your Company"
 							/>
 						</div>
-						<div className="hidden sm:ml-6 sm:block">
+						<div className="hidden items-center justify-start sm:ml-6 sm:flex">
 							<ul className="flex space-x-4">
 								{links.map(({ href, label, exact }, id) => {
 									return (
@@ -90,28 +93,34 @@ export const Navbar = () => {
 							</ul>
 						</div>
 					</div>
+					<div className="hidden shrink sm:block">
+						<Searchbar />
+					</div>
 				</div>
 			</div>
 
 			<div className="relative z-10 w-full sm:hidden" id="mobile-menu">
-				<ul
-					className={`absolute left-0 top-0 z-10 w-full space-y-1 bg-gray-800 px-2 pb-3 pt-2 transition ${!menuOpen ? "-translate-x-full" : ""}`}
+				<div
+					className={`absolute left-0 top-0 z-10 w-full bg-gray-800 px-2 pb-3 pt-2 transition ${!menuOpen ? "-translate-x-full" : ""}`}
 				>
-					{links.map(({ href, label, exact }, id) => {
-						return (
-							<li className="list-none" key={id}>
-								<ActiveLink
-									className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-									href={href as Route}
-									exact={exact}
-									activeClassName="bg-gray-900 hover:bg-gray-900 hover:text-gray-300"
-								>
-									{label}
-								</ActiveLink>
-							</li>
-						);
-					})}
-				</ul>
+					<Searchbar />
+					<ul className="mt-4 space-y-1">
+						{links.map(({ href, label, exact }, id) => {
+							return (
+								<li className="list-none" key={id}>
+									<ActiveLink
+										className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+										href={href as Route}
+										exact={exact}
+										activeClassName="bg-gray-900 hover:bg-gray-900 hover:text-gray-300"
+									>
+										{label}
+									</ActiveLink>
+								</li>
+							);
+						})}
+					</ul>
+				</div>
 			</div>
 		</nav>
 	);

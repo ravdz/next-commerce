@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { RelatedProducts } from "@/components/organims/RelatedProducts";
 
 export const metadata: Metadata = {
 	title: "Next ecommerce app",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 export default function Home() {
 	return (
 		<main>
-			<h1 className="text-2xl font-bold tracking-tight text-gray-900">Homepage</h1>
+			<RelatedProducts />
 		</main>
 	);
 }

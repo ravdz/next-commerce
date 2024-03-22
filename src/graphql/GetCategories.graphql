@@ -1,0 +1,31 @@
+query GetCategories {
+    categories {
+        data {
+            id
+            slug
+            name
+        }
+        meta {
+            total
+        }
+    }
+}
+
+query GetCategoriesWithProducts {
+    categories {
+        data {
+            id
+            slug
+            name
+            products {
+                id
+                name
+                price
+                images {
+                    url
+                    alt
+                }
+            }
+        }
+    }
+}

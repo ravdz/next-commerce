@@ -1,10 +1,26 @@
-export interface IProduct {
+export interface IProductCard {
 	id: string;
-	title: string;
+	name: string;
+	price: number;
+	coverImage: string;
+}
+
+export interface IProductList {
+	products: IProductCard[];
+	total: number;
+}
+
+export interface ISingleProduct {
+	id: string;
+	category: {
+		name: string;
+		id: string;
+		slug: string;
+	};
+	name: string;
 	price: number;
 	description: string;
-	category: string;
-	rating: { rate: number; count: number };
-	image: string;
-	longDescription: string;
+	images: { url: string; alt: string }[];
+	rating: number;
+	reviews: number;
 }

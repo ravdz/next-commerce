@@ -1,0 +1,34 @@
+query GetProducts($take: Int!, $skip: Int!, $orderBy: ProductSortBy = DEFAULT, $order: SortDirection = ASC) {
+    products(take: $take, skip: $skip, orderBy: $orderBy, order: $order) {
+        meta {
+            total
+        }
+        data {
+            id
+            name
+            price
+            images {
+                url
+                alt
+            }
+        }
+    }
+}
+
+query GetProductsByName($search: String!) {
+    products(search: $search) {
+        meta {
+            total
+        }
+        data {
+            id
+            name
+            price
+            images {
+                url
+                alt
+            }
+        }
+    }
+}
+
