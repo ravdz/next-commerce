@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/organims/Navbar";
@@ -15,11 +16,12 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const cartId = cookies().get("cartId")?.value;
 	return (
 		<html lang="en">
 			<body className={inter.className}>
 				<div className="min-h-screen bg-white">
-					<Navbar />
+					<Navbar cartId={cartId} />
 					<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 						{children}
 					</div>

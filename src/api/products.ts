@@ -8,7 +8,7 @@ import {
 	GetTotalNumberOfProductsDocument,
 } from "@/gql/graphql";
 
-type OrderBy = "DEFAULT" | "NAME" | "PRICE" | "RATING";
+export type OrderBy = "DEFAULT" | "NAME" | "PRICE" | "RATING";
 type Order = "ASC" | "DESC";
 
 export const getProducts = async ({
@@ -36,6 +36,7 @@ export const getProducts = async ({
 				id: product.id,
 				name: product.name,
 				price: product.price,
+				rating: product.rating || 0,
 				coverImage: product.images[0]?.url || "",
 			};
 		}),
@@ -57,6 +58,7 @@ export const getProductsByName = async (name: string): Promise<IProductList> => 
 				id: product.id,
 				name: product.name,
 				price: product.price,
+				rating: product.rating || 0,
 				coverImage: product.images[0]?.url || "",
 			};
 		}),

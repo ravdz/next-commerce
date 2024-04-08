@@ -1,0 +1,5 @@
+mutation GetOrCreateCart($input: MutationCartFindOrCreateInput!, $id: ID = "") {
+    cartFindOrCreate(input: $input, id: $id) {
+        id
+    }
+}

@@ -10,8 +10,15 @@ type Props = {
 	currentPage: number;
 	baseUrl: string;
 	itemsPerPage?: number;
+	searchParams?: { [key: string]: string | string[] | undefined };
 };
-export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10 }: Props) => {
+export const Pagination = ({
+	currentPage,
+	totalItems,
+	baseUrl,
+	itemsPerPage = 10,
+	searchParams = {},
+}: Props) => {
 	const paginationRange = usePagination({
 		currentPage,
 		totalItems,
@@ -25,7 +32,7 @@ export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10
 				<div className="flex flex-1 justify-between sm:hidden">
 					{currentPage !== 1 && (
 						<Link
-							href={{ pathname: `${baseUrl}/${currentPage - 1}` }}
+							href={{ pathname: `${baseUrl}/${currentPage - 1}`, query: searchParams }}
 							className="relative mr-auto inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
 						>
 							Previous
@@ -34,7 +41,7 @@ export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10
 
 					{currentPage !== lastPage && (
 						<Link
-							href={{ pathname: `${baseUrl}/${currentPage + 1}` }}
+							href={{ pathname: `${baseUrl}/${currentPage + 1}`, query: searchParams }}
 							className="relative  ml-auto inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
 						>
 							Next
@@ -59,7 +66,7 @@ export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10
 							{currentPage !== 1 && (
 								<Link
 									className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-									href={{ pathname: `${baseUrl}/${currentPage - 1}` }}
+									href={{ pathname: `${baseUrl}/${currentPage - 1}`, query: searchParams }}
 								>
 									<span className="sr-only">Previous</span>
 									<ChevronLeft />
@@ -81,6 +88,7 @@ export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10
 										exact={true}
 										className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
 										href={`${baseUrl}/${pageNumber}` as Route}
+										searchParams={searchParams}
 									>
 										{pageNumber}
 									</ActiveLink>
@@ -90,7 +98,7 @@ export const Pagination = ({ currentPage, totalItems, baseUrl, itemsPerPage = 10
 							{currentPage !== lastPage && (
 								<Link
 									className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-									href={{ pathname: `${baseUrl}/${currentPage + 1}` }}
+									href={{ pathname: `${baseUrl}/${currentPage + 1}`, query: searchParams }}
 								>
 									<span className="sr-only">Next</span>
 									<ChevronRight />

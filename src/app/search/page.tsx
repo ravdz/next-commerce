@@ -7,7 +7,7 @@ type Props = {
 	searchParams: { [key: string]: string | string[] | undefined };
 };
 
-const getQuery = ({ searchParams }: Props) => {
+const getQueryParam = ({ searchParams }: Props) => {
 	if (searchParams?.query)
 		return (
 			Array.isArray(searchParams.query) ? searchParams.query[0] : searchParams.query
@@ -16,7 +16,7 @@ const getQuery = ({ searchParams }: Props) => {
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-	const query = getQuery({ searchParams }) || "Searching";
+	const query = getQueryParam({ searchParams }) || "Searching";
 	return {
 		title: `${query} | Next ecommerce app`,
 		description: "Next ecommerce app",
@@ -24,10 +24,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function Search({ searchParams }: Props) {
-	if (!getQuery({ searchParams }) || getQuery({ searchParams }).length < 2) {
+	if (!getQueryParam({ searchParams }) || getQueryParam({ searchParams }).length < 2) {
 		notFound();
 	}
-	const query = getQuery({ searchParams });
+	const query = getQueryParam({ searchParams });
 
 	const { products } = await getProductsByName(query);
 

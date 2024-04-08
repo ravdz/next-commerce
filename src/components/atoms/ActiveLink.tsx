@@ -9,12 +9,14 @@ type Props<R extends string> = {
 	className?: string;
 	activeClassName?: string;
 	href: Route<R>;
+	searchParams?: { [key: string]: string | string[] | undefined };
 	exact?: boolean;
 	children: React.ReactNode;
 };
 export const ActiveLink = <R extends string>({
 	children,
 	href,
+	searchParams = {},
 	className = "",
 	activeClassName = "",
 	exact = true,
@@ -27,7 +29,11 @@ export const ActiveLink = <R extends string>({
 
 	const classes = twMerge(className, isActive ? activeClassName : "");
 	return (
-		<Link href={href} className={classes} aria-current={isActive ? "page" : false}>
+		<Link
+			href={{ pathname: href, query: searchParams }}
+			className={classes}
+			aria-current={isActive ? "page" : false}
+		>
 			{children}
 		</Link>
 	);

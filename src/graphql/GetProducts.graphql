@@ -7,6 +7,7 @@ query GetProducts($take: Int!, $skip: Int!, $orderBy: ProductSortBy = DEFAULT, $
             id
             name
             price
+            rating
             images {
                 url
                 alt
@@ -24,6 +25,7 @@ query GetProductsByName($search: String!) {
             id
             name
             price
+            rating
             images {
                 url
                 alt

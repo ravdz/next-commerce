@@ -29,7 +29,9 @@ export const ProductListItem = (props: Props) => {
 						</a>
 					</h3>
 				</div>
-				<p className="text-sm font-medium text-gray-900">${price}</p>
+				<span data-testid="product-price" className="text-sm font-medium text-gray-900">
+					${price}
+				</span>
 			</div>
 		</li>
 	);

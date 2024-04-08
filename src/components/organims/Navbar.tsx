@@ -1,9 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import {
+	// useEffect,
+	useState,
+} from "react";
+import Link from "next/link";
 import { type Route } from "next";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 import { ActiveLink } from "@/components/atoms/ActiveLink";
 import { Searchbar } from "@/components/moleculs/Searchbar";
+import { Cart } from "@/svg/Cart";
+// import { getCartById } from "@/api/cart";
+// import type { ICartWithProducts } from "@/types/cart";
 
 const links = [
 	{
@@ -18,11 +25,22 @@ const links = [
 
 export const Navbar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
-	const pathname = usePathname();
+	// const [cart, setCart] = useState<ICartWithProducts | null>(null);
+	// const pathname = usePathname();
 
-	useEffect(() => {
-		setMenuOpen(false);
-	}, [pathname]);
+	// useEffect(() => {
+	// 	setMenuOpen(false);
+	// }, [pathname]);
+	//
+	// useEffect(() => {
+	// 	const getCart = async (cartId: string) => {
+	// 		const data = await getCartById(cartId);
+	// 		console.log(data);
+	// 		setCart(data);
+	// 	};
+	//
+	// 	// if (cartId) getCart(cartId);
+	// }, [cartId]);
 
 	return (
 		<nav className="bg-gray-800">
@@ -96,6 +114,16 @@ export const Navbar = () => {
 					<div className="hidden shrink sm:block">
 						<Searchbar />
 					</div>
+					<Link
+						href={{ pathname: "/cart" }}
+						className="relative rounded p-2 transition hover:bg-gray-600 sm:ml-2 md:ml-4"
+						type="button"
+					>
+						<Cart />
+						{/*<span className="absolute left-full top-full z-10 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-indigo-600 text-[10px] text-white">*/}
+						{/*	6*/}
+						{/*</span>*/}
+					</Link>
 				</div>
 			</div>
 

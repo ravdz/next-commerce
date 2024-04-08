@@ -2,6 +2,7 @@ export interface IProductCard {
 	id: string;
 	name: string;
 	price: number;
+	rating: number;
 	coverImage: string;
 }
 

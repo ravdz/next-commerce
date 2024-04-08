@@ -1,12 +1,41 @@
 import type { Metadata } from "next";
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import Image from "next/image";
+import { cookies } from "next/headers";
 import { getProductById } from "@/api/products";
 import { Rating } from "@/components/atoms/Rating";
+import { executeGraphql } from "@/api";
+import { changeQuantity } from "@/api/cart";
+import {
+	AddProductToCartDocument,
+	GetCartByIdDocument,
+	GetOrCreateCartDocument,
+} from "@/gql/graphql";
+import type { ICart, ICartWithProducts } from "@/types/cart";
+import { AddToCartButton } from "@/components/atoms/AddToCartButton";
 
 type Props = {
 	params: { productId: string };
 };
+
+type ProductToCart = { productId: string; quantity: number };
+
+async function getCart(cartId: string): Promise<ICartWithProducts | null> {
+	const { cart } = await executeGraphql(GetCartByIdDocument, { id: cartId });
+	return cart || null;
+}
+
+async function createCart(productId: string): Promise<ICart> {
+	const { cartFindOrCreate } = await executeGraphql(GetOrCreateCartDocument, {
+		input: { items: [{ productId, quantity: 1 }] },
+	});
+	return cartFindOrCreate;
+}
+
+async function addToCart(cartId: string, product: ProductToCart) {
+	await executeGraphql(AddProductToCartDocument, { id: cartId, input: { item: product } });
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { productId } = params;
@@ -20,9 +49,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
-	const { productId } = params;
-	const product = await getProductById(productId);
+	const product = await getProductById(params.productId);
 	const { id, name, price, description, images, category, rating, reviews } = product;
+
+	async function addToCartAction() {
+		"use server";
+		const { productId } = params;
+		const cartId = cookies().get("cartId")?.value;
+		if (cartId) {
+			const cart = await getCart(cartId);
+			const hasCurrentItem = cart?.items.find((item) => item.product.id === productId);
+			if (hasCurrentItem) {
+				await changeQuantity(cartId, { productId, quantity: hasCurrentItem.quantity + 1 });
+			} else {
+				await addToCart(cartId, { productId, quantity: 1 });
+			}
+		} else {
+			const newCart = await createCart(productId);
+			cookies().set("cartId", newCart.id);
+		}
+
+		/* temporary check */
+		// if (cookies().get("cartId")?.value) {
+		// 	const cart = await getCart(cookies().get("cartId")?.value as string);
+		// 	console.log(cart);
+		// }
+		revalidatePath("/cart");
+	}
 
 	return (
 		<div className="bg-white">
@@ -176,13 +229,9 @@ export default async function ProductPage({ params }: Props) {
 							</div>
 						</div>
 
-						<form className="mt-10">
-							<button
-								type="button"
-								className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-							>
-								Add to bag
-							</button>
+						<form action={addToCartAction} className="mt-10">
+							<input type="hidden" name="productId" value={params.productId} />
+							<AddToCartButton />
 						</form>
 					</div>
 
