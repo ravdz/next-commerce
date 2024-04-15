@@ -1,11 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "@/svg/Search";
 
 export const Searchbar = () => {
 	const [search, setSearch] = useState("");
 	const router = useRouter();
+
+	const submitSearch = useCallback(() => {
+		if (search.length > 1) {
+			router.push(`/search?query=${search}`);
+		}
+	}, [search, router]);
 
 	const checkKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
@@ -19,13 +25,7 @@ export const Searchbar = () => {
 		}, 500);
 
 		return () => clearTimeout(delayDebounceFn);
-	}, [search]);
-
-	const submitSearch = () => {
-		if (search.length > 1) {
-			router.push(`/search?query=${search}`);
-		}
-	};
+	}, [search, submitSearch]);
 
 	return (
 		<div className="w-full md:w-auto">

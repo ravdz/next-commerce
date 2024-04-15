@@ -1,16 +1,8 @@
 "use client";
-import {
-	// useEffect,
-	useState,
-} from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { type Route } from "next";
-// import { usePathname } from "next/navigation";
 import { ActiveLink } from "@/components/atoms/ActiveLink";
 import { Searchbar } from "@/components/moleculs/Searchbar";
-import { Cart } from "@/svg/Cart";
-// import { getCartById } from "@/api/cart";
-// import type { ICartWithProducts } from "@/types/cart";
 
 const links = [
 	{
@@ -23,24 +15,12 @@ const links = [
 	{ href: "/collections", label: "Collections", exact: false },
 ];
 
-export const Navbar = () => {
+export const Navbar = ({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) => {
 	const [menuOpen, setMenuOpen] = useState(false);
-	// const [cart, setCart] = useState<ICartWithProducts | null>(null);
-	// const pathname = usePathname();
-
-	// useEffect(() => {
-	// 	setMenuOpen(false);
-	// }, [pathname]);
-	//
-	// useEffect(() => {
-	// 	const getCart = async (cartId: string) => {
-	// 		const data = await getCartById(cartId);
-	// 		console.log(data);
-	// 		setCart(data);
-	// 	};
-	//
-	// 	// if (cartId) getCart(cartId);
-	// }, [cartId]);
 
 	return (
 		<nav className="bg-gray-800">
@@ -86,11 +66,7 @@ export const Navbar = () => {
 					</div>
 					<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 						<div className="flex flex-shrink-0 items-center">
-							<img
-								className="h-8 w-auto"
-								src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-								alt="Your Company"
-							/>
+							<div className="relative h-8 w-8 bg-indigo-700"></div>
 						</div>
 						<div className="hidden items-center justify-start sm:ml-6 sm:flex">
 							<ul className="flex space-x-4">
@@ -114,16 +90,7 @@ export const Navbar = () => {
 					<div className="hidden shrink sm:block">
 						<Searchbar />
 					</div>
-					<Link
-						href={{ pathname: "/cart" }}
-						className="relative rounded p-2 transition hover:bg-gray-600 sm:ml-2 md:ml-4"
-						type="button"
-					>
-						<Cart />
-						{/*<span className="absolute left-full top-full z-10 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-indigo-600 text-[10px] text-white">*/}
-						{/*	6*/}
-						{/*</span>*/}
-					</Link>
+					{children}
 				</div>
 			</div>
 

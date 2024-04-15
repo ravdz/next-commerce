@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { getCartById } from "@/api/cart";
+import { getCart } from "@/api/cart";
 import { ChangeQuantity } from "@/app/cart/ChangeQuantity";
 import { RemoveProduct } from "@/app/cart/RemoveProduct";
 
@@ -12,8 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Cart() {
-	const cartId = cookies().get("cartId")?.value;
-	const cart = cartId ? await getCartById(cartId) : null;
+	const cart = await getCart();
 
 	return (
 		<main>

@@ -9,6 +9,7 @@ query GetCollection($slug: String!) {
             slug
             name
             price
+            rating
             images {
                 url
                 alt

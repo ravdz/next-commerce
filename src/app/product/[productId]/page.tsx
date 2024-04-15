@@ -1,41 +1,16 @@
 import type { Metadata } from "next";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import Link from "next/link";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import { getProductById } from "@/api/products";
 import { Rating } from "@/components/atoms/Rating";
-import { executeGraphql } from "@/api";
-import { changeQuantity } from "@/api/cart";
-import {
-	AddProductToCartDocument,
-	GetCartByIdDocument,
-	GetOrCreateCartDocument,
-} from "@/gql/graphql";
-import type { ICart, ICartWithProducts } from "@/types/cart";
+import { changeQuantity, addItemToCart, createCart, getCart } from "@/api/cart";
 import { AddToCartButton } from "@/components/atoms/AddToCartButton";
 
 type Props = {
 	params: { productId: string };
 };
-
-type ProductToCart = { productId: string; quantity: number };
-
-async function getCart(cartId: string): Promise<ICartWithProducts | null> {
-	const { cart } = await executeGraphql(GetCartByIdDocument, { id: cartId });
-	return cart || null;
-}
-
-async function createCart(productId: string): Promise<ICart> {
-	const { cartFindOrCreate } = await executeGraphql(GetOrCreateCartDocument, {
-		input: { items: [{ productId, quantity: 1 }] },
-	});
-	return cartFindOrCreate;
-}
-
-async function addToCart(cartId: string, product: ProductToCart) {
-	await executeGraphql(AddProductToCartDocument, { id: cartId, input: { item: product } });
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { productId } = params;
@@ -55,26 +30,25 @@ export default async function ProductPage({ params }: Props) {
 	async function addToCartAction() {
 		"use server";
 		const { productId } = params;
-		const cartId = cookies().get("cartId")?.value;
-		if (cartId) {
-			const cart = await getCart(cartId);
+		const cart = await getCart();
+		if (cart) {
 			const hasCurrentItem = cart?.items.find((item) => item.product.id === productId);
 			if (hasCurrentItem) {
-				await changeQuantity(cartId, { productId, quantity: hasCurrentItem.quantity + 1 });
+				await changeQuantity(cart.id, { productId, quantity: hasCurrentItem.quantity + 1 });
 			} else {
-				await addToCart(cartId, { productId, quantity: 1 });
+				await addItemToCart(cart.id, { productId, quantity: 1 });
 			}
 		} else {
 			const newCart = await createCart(productId);
 			cookies().set("cartId", newCart.id);
 		}
-
 		/* temporary check */
 		// if (cookies().get("cartId")?.value) {
 		// 	const cart = await getCart(cookies().get("cartId")?.value as string);
 		// 	console.log(cart);
 		// }
-		revalidatePath("/cart");
+		// revalidatePath("/cart");
+		revalidateTag("cart");
 	}
 
 	return (

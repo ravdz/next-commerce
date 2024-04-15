@@ -322,14 +322,14 @@ export type GetCategoriesQuery = { categories: { data: Array<{ id: string, slug:
 export type GetCategoriesWithProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCategoriesWithProductsQuery = { categories: { data: Array<{ id: string, slug: string, name: string, products: Array<{ id: string, name: string, price: number, images: Array<{ url: string, alt: string }> }> }> } };
+export type GetCategoriesWithProductsQuery = { categories: { data: Array<{ id: string, slug: string, name: string, products: Array<{ id: string, name: string, price: number, rating?: number | null, images: Array<{ url: string, alt: string }> }> }> } };
 
 export type GetCollectionQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type GetCollectionQuery = { collection?: { id: string, name: string, slug: string, description: string, products: Array<{ id: string, slug: string, name: string, price: number, images: Array<{ url: string, alt: string }> }> } | null };
+export type GetCollectionQuery = { collection?: { id: string, name: string, slug: string, description: string, products: Array<{ id: string, slug: string, name: string, price: number, rating?: number | null, images: Array<{ url: string, alt: string }> }> } | null };
 
 export type GetCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -477,6 +477,7 @@ export const GetCategoriesWithProductsDocument = new TypedDocumentString(`
         id
         name
         price
+        rating
         images {
           url
           alt
@@ -498,6 +499,7 @@ export const GetCollectionDocument = new TypedDocumentString(`
       slug
       name
       price
+      rating
       images {
         url
         alt

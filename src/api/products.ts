@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { ISingleProduct, IProductList } from "@/types/product";
-import { executeGraphql } from "@/api";
+import { executeGraphQl } from "@/api";
 import {
 	GetProductByIdDocument,
 	GetProductsByNameDocument,
@@ -27,7 +27,10 @@ export const getProducts = async ({
 			meta: { total },
 			data,
 		},
-	} = await executeGraphql(GetProductsDocument, { take, skip, orderBy, order });
+	} = await executeGraphQl({
+		query: GetProductsDocument,
+		variables: { take, skip, orderBy, order },
+	});
 
 	return {
 		total,
@@ -49,7 +52,7 @@ export const getProductsByName = async (name: string): Promise<IProductList> => 
 			meta: { total },
 			data,
 		},
-	} = await executeGraphql(GetProductsByNameDocument, { search: name });
+	} = await executeGraphQl({ query: GetProductsByNameDocument, variables: { search: name } });
 
 	return {
 		total,
@@ -70,12 +73,15 @@ export const getTotalNumberOfProducts = async (): Promise<number> => {
 		products: {
 			meta: { total },
 		},
-	} = await executeGraphql(GetTotalNumberOfProductsDocument);
+	} = await executeGraphQl({ query: GetTotalNumberOfProductsDocument });
 	return total;
 };
 
 export const getProductById = async (productId: ISingleProduct["id"]): Promise<ISingleProduct> => {
-	const { product } = await executeGraphql(GetProductByIdDocument, { id: productId });
+	const { product } = await executeGraphQl({
+		query: GetProductByIdDocument,
+		variables: { id: productId },
+	});
 
 	if (!product) {
 		notFound();

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { executeGraphql } from "@/api/index";
+import { executeGraphQl } from "@/api/index";
 import { GetCollectionDocument, GetCollectionsDocument } from "@/gql/graphql";
 import type { ICollectionList, ICollectionWithProducts } from "@/types/collection";
 
@@ -9,14 +9,17 @@ export const getCollections = async (): Promise<ICollectionList> => {
 			data,
 			meta: { total },
 		},
-	} = await executeGraphql(GetCollectionsDocument);
+	} = await executeGraphQl({ query: GetCollectionsDocument });
 	return { total, collections: data };
 };
 
 export const getCollectionBySlug = async (
 	collectionSlug: string,
 ): Promise<ICollectionWithProducts> => {
-	const { collection } = await executeGraphql(GetCollectionDocument, { slug: collectionSlug });
+	const { collection } = await executeGraphQl({
+		query: GetCollectionDocument,
+		variables: { slug: collectionSlug },
+	});
 	if (!collection) {
 		notFound();
 	}
@@ -31,6 +34,7 @@ export const getCollectionBySlug = async (
 				id: product.id,
 				name: product.name,
 				price: product.price,
+				rating: product.rating || 0,
 				coverImage: product.images[0]?.url || "",
 			};
 		}),
